@@ -62,8 +62,15 @@ export default function Quiz() {
               Quit
             </button>
           </div>
-          <div className="w-full h-1 bg-gray-200 rounded-full mb-8">
-            <div className="h-full bg-orange-400 w-1/3 rounded-full transition-all duration-300" />
+          <div className="flex gap-2 justify-center mb-6">
+            {Array.from({ length: 10 }).map((_, i) => (
+              <div
+                key={i}
+                className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                  i <= currentIndex ? "bg-orange-400" : "bg-gray-200"
+                }`}
+              />
+            ))}
           </div>
 
           {/* Title */}
