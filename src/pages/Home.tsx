@@ -30,7 +30,7 @@ const Home = () => {
 
         <div className="flex justify-center gap-4">
           <button
-            className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+            className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition cursor-pointer"
             onClick={() => navigate("/quiz")}
           >
             Start
