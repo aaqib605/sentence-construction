@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 
 import { Question } from "../vite-env";
+import Result from "./Result";
 
 export default function Quiz() {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -9,6 +10,8 @@ export default function Quiz() {
   const [selectedWords, setSelectedWords] = useState<(string | null)[]>([]);
   const [loading, setLoading] = useState(true);
   const [timeLeft, setTimeLeft] = useState(30);
+  const [score, setScore] = useState(0);
+  const [showResults, setShowResults] = useState(false);
 
   const currentQuestion = questions[currentIndex];
 
@@ -26,15 +29,25 @@ export default function Quiz() {
   };
 
   const handleNext = useCallback(() => {
+    const correctAnswer = questions[currentIndex].correctAnswer;
+
+    const isCorrect =
+      selectedWords.length === correctAnswer.length &&
+      selectedWords.every((word, idx) => word === correctAnswer[idx]);
+
+    if (isCorrect) {
+      setScore((prev) => prev + 1);
+    }
+
     if (currentIndex < questions.length - 1) {
       setCurrentIndex((prev) => prev + 1);
       setSelectedWords(
         new Array(questions[currentIndex + 1].correctAnswer.length).fill(null)
       );
     } else {
-      alert("All questions completed!");
+      setShowResults(true); // Finished all questions
     }
-  }, [currentIndex, questions]);
+  }, [currentIndex, questions, selectedWords]);
 
   const parts = currentQuestion?.question.split("_____________");
 
@@ -68,6 +81,24 @@ export default function Quiz() {
   }, [currentIndex]);
 
   if (loading || !currentQuestion) return <div className="p-8">Loading...</div>;
+
+  if (showResults) {
+    return (
+      <Result
+        score={score}
+        total={questions.length}
+        onRestart={() => {
+          setScore(0);
+          setCurrentIndex(0);
+          setSelectedWords(
+            new Array(questions[0].correctAnswer.length).fill(null)
+          );
+          setShowResults(false);
+          setTimeLeft(30);
+        }}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
