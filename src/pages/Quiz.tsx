@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 
 import { Question } from "../vite-env";
@@ -8,18 +8,7 @@ export default function Quiz() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedWords, setSelectedWords] = useState<(string | null)[]>([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch("http://localhost:3001/data")
-      .then((res) => res.json())
-      .then((data) => {
-        setQuestions(data.questions);
-        setSelectedWords(
-          new Array(data.questions[0].correctAnswer.length).fill(null)
-        );
-        setLoading(false);
-      });
-  }, []);
+  const [timeLeft, setTimeLeft] = useState(30);
 
   const currentQuestion = questions[currentIndex];
 
@@ -36,20 +25,49 @@ export default function Quiz() {
     }
   };
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (currentIndex < questions.length - 1) {
-      setCurrentIndex(currentIndex + 1);
+      setCurrentIndex((prev) => prev + 1);
       setSelectedWords(
         new Array(questions[currentIndex + 1].correctAnswer.length).fill(null)
       );
     } else {
       alert("All questions completed!");
     }
-  };
+  }, [currentIndex, questions]);
+
+  const parts = currentQuestion?.question.split("_____________");
+
+  useEffect(() => {
+    fetch("http://localhost:3001/data")
+      .then((res) => res.json())
+      .then((data) => {
+        setQuestions(data.questions);
+        setSelectedWords(
+          new Array(data.questions[0].correctAnswer.length).fill(null)
+        );
+        setLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (timeLeft === 0) {
+      handleNext();
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft, handleNext]);
+
+  useEffect(() => {
+    setTimeLeft(30);
+  }, [currentIndex]);
 
   if (loading || !currentQuestion) return <div className="p-8">Loading...</div>;
-
-  const parts = currentQuestion.question.split("_____________");
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -57,7 +75,9 @@ export default function Quiz() {
         <div>
           {/* Timer and Progress */}
           <div className="flex justify-between items-center mb-4">
-            <span className="text-lg font-medium">0:15</span>
+            <span className="text-lg font-medium">
+              0:{timeLeft.toString().padStart(2, "0")}
+            </span>
             <button className="border px-3 py-1 rounded-md text-sm">
               Quit
             </button>
