@@ -22,6 +22,7 @@ export default function Quiz() {
 
   const handleWordSelect = (word: string) => {
     const index = selectedWords.findIndex((val) => val === null);
+
     if (selectedWords.includes(word)) {
       setSelectedWords((prev) =>
         prev.map((val) => (val === word ? null : val))
@@ -29,6 +30,7 @@ export default function Quiz() {
     } else if (index !== -1) {
       const newSelections = [...selectedWords];
       newSelections[index] = word;
+
       setSelectedWords(newSelections);
     }
   };
@@ -56,6 +58,7 @@ export default function Quiz() {
 
     if (currentIndex < questions.length - 1) {
       setCurrentIndex((prev) => prev + 1);
+
       setSelectedWords(
         new Array(questions[currentIndex + 1].correctAnswer.length).fill(null)
       );
@@ -77,15 +80,27 @@ export default function Quiz() {
   const parts = currentQuestion?.question.split("_____________");
 
   useEffect(() => {
-    fetch("http://localhost:3001/data")
-      .then((res) => res.json())
-      .then((data) => {
+    const initializeQuestions = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/data");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
         setQuestions(data.questions);
         setSelectedWords(
           new Array(data.questions[0].correctAnswer.length).fill(null)
         );
         setLoading(false);
-      });
+      } catch (error) {
+        console.error("Failed to fetch questions:", error);
+        setLoading(false);
+      }
+    };
+
+    initializeQuestions();
   }, []);
 
   useEffect(() => {
@@ -105,7 +120,7 @@ export default function Quiz() {
     setTimeLeft(30);
   }, [currentIndex]);
 
-  if (loading || !currentQuestion) return <Loader />;
+  if (loading) return <Loader />;
 
   if (showResults) {
     return (
@@ -123,7 +138,7 @@ export default function Quiz() {
           setTimeLeft(30);
         }}
         userAnswers={userAnswers}
-        correctAnswers={questions}
+        questions={questions}
       />
     );
   }
@@ -178,6 +193,7 @@ export default function Quiz() {
           <div className="flex flex-wrap justify-center gap-3 max-w-xl mx-auto mb-10">
             {currentQuestion.options.map((word) => {
               const isSelected = selectedWords.includes(word);
+
               return (
                 <button
                   key={word}
@@ -198,7 +214,7 @@ export default function Quiz() {
 
         <div className="flex justify-end">
           <button
-            className="bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-xl disabled:bg-gray-300 transition-all cursor-pointer"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-xl disabled:bg-gray-300   disabled:cursor-not-allowed transition-all cursor-pointer"
             onClick={handleNext}
             disabled={selectedWords.includes(null)}
           >

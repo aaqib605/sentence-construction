@@ -17,5 +17,5 @@ export type ResultProps = {
   total: number;
   onRestart: () => void;
   userAnswers: UserAnswer[];
-  correctAnswers: Question[];
+  questions: Question[];
 };

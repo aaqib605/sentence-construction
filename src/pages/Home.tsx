@@ -1,8 +1,6 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Home = () => {
-  const navigate = useNavigate();
-
   return (
     <main className="min-h-screen flex items-center justify-center px-4 py-10 bg-white">
       <div className="w-full max-w-xl text-center space-y-10">
@@ -29,12 +27,12 @@ const Home = () => {
         </div>
 
         <div className="flex justify-center gap-4">
-          <button
-            className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition cursor-pointer"
-            onClick={() => navigate("/quiz")}
+          <Link
+            to="/quiz"
+            className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
           >
             Start
-          </button>
+          </Link>
         </div>
       </div>
     </main>
