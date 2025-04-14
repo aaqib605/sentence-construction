@@ -15,7 +15,7 @@ export default function Result({
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="bg-white rounded-2xl shadow-xl w-3/5 max-lg:w-4/5 max-md:w-5/5 p-8 text-center my-10">
+      <div className="bg-white rounded-2xl shadow-xl w-3/5 max-lg:w-4/5 max-md:w-5/5 p-8 text-center my-10 max-w-[1440px]">
         <div className="flex justify-center mb-6">
           <div className="relative">
             <div
@@ -35,7 +35,7 @@ export default function Result({
 
         <p className="text-gray-700 mb-8 text-center">{feedbackMessage}</p>
 
-        <div className="text-left mb-8">
+        <div className="text-left mb-8 max-sm:overflow-x-auto">
           <h3 className="text-lg font-semibold mb-4">Your Answers:</h3>
           <table className="w-full border-collapse border border-gray-300">
             <thead>

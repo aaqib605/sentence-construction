@@ -163,11 +163,13 @@ export default function Quiz() {
               <React.Fragment key={i}>
                 <span>{part.trim()} </span>
                 {i < selectedWords.length && (
-                  <span className="inline-block border-b-2 border-black min-w-[80px] px-2 mx-1">
-                    {selectedWords[i] && (
+                  <span className="inline-block border-b-2 border-black w-32 px-2 mx-1 text-center overflow-hidden">
+                    {selectedWords[i] ? (
                       <span className="border px-2 py-0.5 rounded-md text-sm sm:text-base bg-gray-50">
                         {selectedWords[i]}
                       </span>
+                    ) : (
+                      <span className="invisible">Placeholder</span>
                     )}
                   </span>
                 )}
