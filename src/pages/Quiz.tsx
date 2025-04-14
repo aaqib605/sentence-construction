@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Question, UserAnswer } from "../vite-env";
 import Result from "./Result";
 import Loader from "../components/Loader";
+import { questionsData } from "../assets/questions";
 
 export default function Quiz() {
   const navigate = useNavigate();
@@ -80,27 +81,11 @@ export default function Quiz() {
   const parts = currentQuestion?.question.split("_____________");
 
   useEffect(() => {
-    const initializeQuestions = async () => {
-      try {
-        const response = await fetch("http://localhost:3001/data");
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        setQuestions(data.questions);
-        setSelectedWords(
-          new Array(data.questions[0].correctAnswer.length).fill(null)
-        );
-        setLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch questions:", error);
-        setLoading(false);
-      }
-    };
-
-    initializeQuestions();
+    setQuestions(questionsData);
+    setSelectedWords(
+      new Array(questionsData[0].correctAnswer.length).fill(null)
+    );
+    setLoading(false);
   }, []);
 
   useEffect(() => {
